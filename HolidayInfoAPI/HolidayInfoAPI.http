@@ -1,0 +1,6 @@
+@HolidayInfoAPI_HostAddress = https://localhost:7283
+
+GET {{HolidayInfoAPI_HostAddress}}/
+Accept: application/json
+
+###
