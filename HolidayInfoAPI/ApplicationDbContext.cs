@@ -7,9 +7,7 @@ using System.Linq;
 public class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
-    {
-    }
+        : base(options){}
 
     // Define the DbSet for the Holidays table
     public DbSet<Holiday> Holidays { get; set; }
@@ -21,11 +19,12 @@ public class ApplicationDbContext : DbContext
         var holidays = await this.Holidays
             .Where(h => h.Date.Year == int.Parse(year) && h.CountryCode == countryCode)
             .GroupBy(h => new { h.Name, h.Date , h.CountryCode })
+            // To avoid duplicates, select the first holiday in each group
             .Select(g => g.First())
+            .OrderBy(h => h.Date) // Order by date
             .ToListAsync();
 
         return holidays;
-
     }
 
     // Method to save holidays

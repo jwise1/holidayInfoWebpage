@@ -8,16 +8,21 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using Microsoft.VisualBasic;
 
 public class HolidayTrigger
 {
+    // Client object to access external APIs
     private readonly HttpClient _client;
 
+    // Constructor to initialize the HttpClient
     public HolidayTrigger(HttpClient client)
     {
         _client = client;
     }
-
+    
+    bool flag; 
+    // Trigger function to access DB and external holiday data site
     [FunctionName("MyHttpTrigger")]
     public async Task<IActionResult> Run(
         [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
@@ -36,7 +41,7 @@ public class HolidayTrigger
 
         try
         {
-            // Step 1: Fetch holidays from HolidayInfoAPI
+            // Fetch holidays from HolidayInfoAPI if available
             var apiUrl = $"https://localhost:7283/api/holiday/holidays?year={year}&countryCode={countryCode}";
             var response = await _client.GetAsync(apiUrl);
 
@@ -49,12 +54,13 @@ public class HolidayTrigger
                 if (!string.IsNullOrWhiteSpace(holidays) && holidays != "[]")
                 {
                     log.LogInformation("Holidays retrieved from database.");
+                    flag = true;
                     return new OkObjectResult(holidays);
                 }
                 log.LogWarning("Database is empty. Fetching data from external API...");
             }
 
-            // Step 2: Fetch holidays from Nager.Date API
+            // Otherwise, fetch holidays from Nager.Date API
             var externalApiUrl = $"https://date.nager.at/api/v3/publicholidays/{year}/{countryCode}";
             var externalResponse = await _client.GetStringAsync(externalApiUrl);
 
@@ -65,24 +71,27 @@ public class HolidayTrigger
                 log.LogError("No holidays found from external API.");
                 return new NotFoundObjectResult("No holidays found.");
             }
-
-            // Step 3: Save holidays to database via HolidayInfoAPI
-            var saveUrl = $"https://localhost:7283/api/holiday/holidays";
-            var saveResponse = await _client.PostAsJsonAsync(saveUrl, holidaysFromExternalApi);
-
-            if (saveResponse.IsSuccessStatusCode)
-            {
-                log.LogInformation("Holidays successfully saved to database.");
-                return new OkObjectResult(holidaysFromExternalApi);
+            else {
+                flag = false;
             }
 
-            log.LogError($"Failed to save holidays. Status code: {saveResponse.StatusCode}.");
-            /* [2025-04-18T22:13:58.747Z] Triggered MyHttpTrigger function.
-                [2025-04-18T22:13:58.774Z] HolidayInfoAPI response: NotFound.
-                [2025-04-18T22:13:58.904Z] Failed to save holidays. Status code: MethodNotAllowed.
-                [2025-04-18T22:13:58.914Z] Executed 'MyHttpTrigger' (Succeeded, Id=cd1729d7-a0c9-4fde-b37e-515a3dde25fc, Duration=185ms) 
-            */
-            return new StatusCodeResult((int)saveResponse.StatusCode);
+            // Finally, save holidays to database via HolidayInfoAPI if data not already in DB
+            if (flag == false) {
+                var saveUrl = $"https://localhost:7283/api/holiday/holidays";
+                var saveResponse = await _client.PostAsJsonAsync(saveUrl, holidaysFromExternalApi);
+                if (saveResponse.IsSuccessStatusCode)
+                {
+                    log.LogInformation("Holidays successfully saved to database.");
+                    return new OkObjectResult(holidaysFromExternalApi);
+                }
+                log.LogError($"Failed to save holidays. Status code: {saveResponse.StatusCode}.");
+                return new StatusCodeResult((int)saveResponse.StatusCode);
+            }
+            else {
+                log.LogInformation("Holidays already exist in the database.");
+                return new OkObjectResult(await response.Content.ReadAsStringAsync());
+            }
+            
         }
         catch (HttpRequestException ex)
         {
@@ -95,6 +104,8 @@ public class HolidayTrigger
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }
+
+    // Holiday object class for holding holiday data (local)
     public class Holiday
     {
         public int Id { get; set; }

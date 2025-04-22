@@ -11,6 +11,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 );
 builder.Services.AddHttpClient();
 
+// CORS policies for allowing frontend access
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -29,7 +30,7 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Apply CORS globally
+// Apply CORS policies
 app.UseCors("AllowFrontend");
 
 app.UseAuthorization();

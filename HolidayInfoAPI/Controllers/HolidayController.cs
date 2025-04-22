@@ -9,16 +9,19 @@ namespace HolidayInfoAPI.Controllers
     [Route("api/[controller]")]
     [EnableCors("AllowSpecificOrigin")]
 
+    // Holiday Controller for handling holiday based DB accessing and API calls
     public class HolidayController : ControllerBase
     {
+        // DB context for accessing the database
         private readonly ApplicationDbContext _dbContext;
 
+        // Constructor to initialize the DB context
         public HolidayController(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
     
-
+        // Call ApplicationDBContext to get holiday data
         [HttpGet("holidays")]
         public async Task<IActionResult> GetHolidays([FromQuery] int year, [FromQuery] string countryCode)
         {
@@ -27,7 +30,8 @@ namespace HolidayInfoAPI.Controllers
             return Ok(holidays);
         }
 
-       [HttpPost("holidays")]
+        // Call ApplicationDBContext to save holiday data
+        [HttpPost("holidays")]
         public async Task<IActionResult> SaveHolidays([FromBody] List<Holiday> holidays)
         {
             try

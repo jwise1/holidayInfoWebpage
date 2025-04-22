@@ -25,10 +25,18 @@ To pull and deploy locally:
 11. Again, make note of the port number given for the frontend application. This will ensure the pipeline is validly configured.
 12. Visit the localhost address given in a browser and test the functionality of the application. Entering in a year and a country code should provide the holidays of that year.
 
-TODOS:
+TODOS: 
+Make the webpage visually appealing. 
+Deploy function, webpage, backend.
 
-ISSUES:
+ISSUES: 
+Hopefully all resolved.
 
 DEBUGS:
+Dates not being populated correctly in database; fixed with adjustments to datetime objects
+Connection to database faulty; verified correct address by accessing in browser
+CORS issues with frontend; changed parameters in program.cs
+Others fixed with log statements, copilot and google :)
 
 OTHER:
+Good experience building and deploying simple webpage and C# practice. Object oriented approach seems similar to Java even in syntax. Querying and accessing database in this way is useful and good to experience. Hardest part was configuring each piece together--i.e. frontend to backend, frontend to function, backend to function--but was good to work through. 
