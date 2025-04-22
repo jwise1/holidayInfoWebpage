@@ -21,7 +21,7 @@ public class HolidayTrigger
         _client = client;
     }
     
-    bool flag; 
+    
     // Trigger function to access DB and external holiday data site
     [FunctionName("MyHttpTrigger")]
     public async Task<IActionResult> Run(
@@ -54,7 +54,6 @@ public class HolidayTrigger
                 if (!string.IsNullOrWhiteSpace(holidays) && holidays != "[]")
                 {
                     log.LogInformation("Holidays retrieved from database.");
-                    flag = true;
                     return new OkObjectResult(holidays);
                 }
                 log.LogWarning("Database is empty. Fetching data from external API...");
@@ -71,27 +70,18 @@ public class HolidayTrigger
                 log.LogError("No holidays found from external API.");
                 return new NotFoundObjectResult("No holidays found.");
             }
-            else {
-                flag = false;
-            }
 
-            // Finally, save holidays to database via HolidayInfoAPI if data not already in DB
-            if (flag == false) {
-                var saveUrl = $"https://localhost:7283/api/holiday/holidays";
-                var saveResponse = await _client.PostAsJsonAsync(saveUrl, holidaysFromExternalApi);
-                if (saveResponse.IsSuccessStatusCode)
-                {
-                    log.LogInformation("Holidays successfully saved to database.");
-                    return new OkObjectResult(holidaysFromExternalApi);
-                }
-                log.LogError($"Failed to save holidays. Status code: {saveResponse.StatusCode}.");
-                return new StatusCodeResult((int)saveResponse.StatusCode);
+            // Finally, save holidays to database via HolidayInfoAPI
+            var saveUrl = $"https://localhost:7283/api/holiday/holidays";
+            var saveResponse = await _client.PostAsJsonAsync(saveUrl, holidaysFromExternalApi);
+
+            if (saveResponse.IsSuccessStatusCode)
+            {
+                log.LogInformation("Holidays successfully saved to database.");
+                return new OkObjectResult(holidaysFromExternalApi);
             }
-            else {
-                log.LogInformation("Holidays already exist in the database.");
-                return new OkObjectResult(await response.Content.ReadAsStringAsync());
-            }
-            
+            log.LogError($"Failed to save holidays. Status code: {saveResponse.StatusCode}.");
+            return new StatusCodeResult((int)saveResponse.StatusCode);
         }
         catch (HttpRequestException ex)
         {

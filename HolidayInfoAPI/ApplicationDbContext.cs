@@ -21,10 +21,12 @@ public class ApplicationDbContext : DbContext
             .GroupBy(h => new { h.Name, h.Date , h.CountryCode })
             // To avoid duplicates, select the first holiday in each group
             .Select(g => g.First())
-            .OrderBy(h => h.Date) // Order by date
             .ToListAsync();
 
+        holidays = holidays.OrderBy(h => h.Date).ToList();
+
         return holidays;
+
     }
 
     // Method to save holidays

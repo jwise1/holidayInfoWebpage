@@ -7,16 +7,13 @@ const HolidayApp = () => {
     const [countryCode, setCountryCode] = useState('');
 
     const fetchHolidays = async (year, countryCode) => {
+        setHolidays([]); // Clear previous holidays
         try {
             const response = await axios.get('http://localhost:7071/api/MyHttpTrigger', {
                 params: { year, countryCode },
             });
     
-            const uniqueHolidays = Array.from(
-                new Map(response.data.map(holiday => [holiday.name, holiday])).values()
-            );
-    
-            setHolidays(uniqueHolidays);
+            setHolidays(response.data);
         } catch (error) {
             console.error('Error fetching holidays:', error.message);
         }
