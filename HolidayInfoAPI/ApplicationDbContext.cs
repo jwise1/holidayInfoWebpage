@@ -19,9 +19,9 @@ public class ApplicationDbContext : DbContext
     {
         // Use 'this' (the current DbContext instance) to access Holidays
         var holidays = await this.Holidays
-            .Where(h => h.HolidayDate.Year.ToString() == year && h.CountryCode == countryCode)
-            .GroupBy(h => h.Name) // Group by holiday name
-            .Select(g => g.First()) // Select the first holiday from each group
+            .Where(h => h.Date.Year == int.Parse(year) && h.CountryCode == countryCode)
+            .GroupBy(h => new { h.Name, h.Date , h.CountryCode })
+            .Select(g => g.First())
             .ToListAsync();
 
         return holidays;

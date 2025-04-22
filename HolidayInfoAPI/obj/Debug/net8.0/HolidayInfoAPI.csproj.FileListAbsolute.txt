@@ -167,3 +167,4 @@ D:\Projects\Professional\dataHaul\HolidayInfoAPI\obj\Debug\net8.0\refint\Holiday
 D:\Projects\Professional\dataHaul\HolidayInfoAPI\obj\Debug\net8.0\HolidayInfoAPI.pdb
 D:\Projects\Professional\dataHaul\HolidayInfoAPI\obj\Debug\net8.0\HolidayInfoAPI.genruntimeconfig.cache
 D:\Projects\Professional\dataHaul\HolidayInfoAPI\obj\Debug\net8.0\ref\HolidayInfoAPI.dll
+D:\Projects\Professional\dataHaul\HolidayInfoAPI\obj\Debug\net8.0\HolidayInfoAPI.sourcelink.json

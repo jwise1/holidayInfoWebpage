@@ -6,10 +6,10 @@ const HolidayApp = () => {
     const [year, setYear] = useState('');
     const [countryCode, setCountryCode] = useState('');
 
-    const fetchHolidays = async () => {
+    const fetchHolidays = async (year, countryCode) => {
         try {
             const response = await axios.get('http://localhost:7071/api/MyHttpTrigger', {
-                params: { year: 2025, countryCode: 'US' },
+                params: { year, countryCode },
             });
     
             const uniqueHolidays = Array.from(
@@ -40,11 +40,12 @@ const HolidayApp = () => {
             <button onClick={() => fetchHolidays(year, countryCode)}>Fetch Holidays</button>
             <ul>
                 {holidays.map((holiday) => (
-                    <li key={`${holiday.id}-${holiday.name}`}>
-                        {holiday.name} - {holiday.holidayDate}
+                    <li key={holiday.id}>
+                        {holiday.name} - {new Date(holiday.date).toLocaleDateString()}
                     </li>
                 ))}
             </ul>
+
 
         </div>
     );

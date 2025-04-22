@@ -37,7 +37,7 @@ public class HolidayTrigger
         try
         {
             // Step 1: Fetch holidays from HolidayInfoAPI
-            var apiUrl = $"http://localhost:5283/api/holidays?year={year}&countryCode={countryCode}";
+            var apiUrl = $"https://localhost:7283/api/holiday/holidays?year={year}&countryCode={countryCode}";
             var response = await _client.GetAsync(apiUrl);
 
             log.LogInformation($"HolidayInfoAPI response: {response.StatusCode}.");
@@ -100,6 +100,6 @@ public class HolidayTrigger
         public int Id { get; set; }
         public string Name { get; set; }
         public string CountryCode { get; set; }
-        public DateTime HolidayDate { get; set; }
+        public DateTime Date { get; set; }
     }
 }
