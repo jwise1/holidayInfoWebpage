@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HolidayInfoAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ae46802fc0f10d2f73765749202f846e4e2abb7f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aa9a4373939ed09c6910c92f093f4b451d7add0c")]
 [assembly: System.Reflection.AssemblyProductAttribute("HolidayInfoAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HolidayInfoAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
